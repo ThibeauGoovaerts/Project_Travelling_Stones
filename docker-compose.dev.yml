@@ -1,0 +1,31 @@
+services:
+  db:
+    container_name: calloux-db
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: root
+    networks:
+      - backend
+
+  django:
+    container_name: projetCalloux-django-dev
+    volumes:
+      - ./Web_rest_api:/app
+    build:
+      context: .
+      dockerfile: Dockerfile-dev.django
+    networks:
+      - backend
+
+  nginx:
+    container_name: nginx-Calloux-dev
+    image: nginx
+    ports:
+      - 8888:80
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    networks:
+      - backend
+
+networks:
+  backend:

@@ -1,0 +1,13 @@
+{
+    email e194534@student.hers.be
+}
+
+http://vps-732282ba.vps.ovh.net {
+    header {
+        Access-Control-Allow-Origin *
+        Access-Control-Allow-Credentials true
+        Access-Control-Allow-Methods *
+        Access-Control-Allow-Headers *
+    }
+    reverse_proxy http://nginx
+}

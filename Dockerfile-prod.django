@@ -1,0 +1,50 @@
+###########
+# BUILDER #
+###########
+
+FROM python:3 as builder
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN pip install --upgrade pip
+RUN pip install flake8==3.9.2
+
+COPY ./Web_rest_api .
+RUN flake8 --ignore=E501,F401 .
+
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+#########
+# FINAL #
+#########
+FROM python:3
+
+RUN mkdir -p /home/app
+
+RUN addgroup --system app && adduser --system app --ingroup app
+
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+
+COPY --from=builder /usr/src/app/wheels /app/wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --no-cache /app/wheels/*
+
+COPY ./entrypoint.prod.sh .
+RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
+RUN chmod +x  $APP_HOME/entrypoint.prod.sh
+
+COPY ./Web_rest_api $APP_HOME
+
+RUN chown -R app:app $APP_HOME
+
+USER app
+
+ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]

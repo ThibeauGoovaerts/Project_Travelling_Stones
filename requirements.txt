@@ -1,0 +1,16 @@
+django-cors-headers==3.13
+asgiref==3.6.0
+distlib==0.3.6
+Django==3.2
+djangorestframework==3.14
+nodeenv==1.7.0
+platformdirs==2.6.2
+pytz==2022.7.1
+PyYAML==6.0
+sqlparse==0.4.3
+tzdata==2022.7
+pre-commit
+psycopg2-binary
+djangorestframework-simplejwt==5.2.2
+gunicorn==20.1.0
+httpie==3.2.1
